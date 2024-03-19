@@ -63,6 +63,13 @@ public class TelegramBot extends TelegramLongPollingBot {
                     break;
                 case "/help":
                     sendMessage(chatId, HELP_TEXT);
+                    log.info("Send help description for " + update.getMessage().getChat().getFirstName());
+                    break;
+                case "/mydata":
+                    break;
+                case "/delete":
+                    break;
+                case "/settings":
                     break;
                 default:
                     sendMessage(chatId, "Sorry, it  doesn't work for now(");
