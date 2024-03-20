@@ -19,6 +19,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Data
@@ -34,6 +35,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             "Type /start to see a welcome message\n\n" +
             "Type /mydata to see data stored about yourself\n\n" +
             "Type /help to see this message again";
+
 
     public TelegramBot( BotConfig config) {
         this.config = config;
@@ -63,12 +65,39 @@ public class TelegramBot extends TelegramLongPollingBot {
                     break;
                 case "/help":
                     sendMessage(chatId, HELP_TEXT);
+                    log.info("Send help description for " + update.getMessage().getChat().getFirstName());
+                    break;
+                case "/mydata":
+                    sendMessage(chatId,"This is all information, what we have about you\n\n" +
+                            dataOfUser(update.getMessage()));
+                    log.info("Send data for "+ update.getMessage().getChat().getFirstName() + " from BD");
+                    break;
+                case "/delete":
+                    deleteUserData(update.getMessage(),chatId);
+                    break;
+                case "/settings":
                     break;
                 default:
                     sendMessage(chatId, "Sorry, it  doesn't work for now(");
                     log.info("Incorrect ask from user " + update.getMessage().getChat().getFirstName());
             }
         }
+    }
+
+    private void deleteUserData(Message message, long chatId) {
+        if(userRepository.findById(message.getChatId()).isEmpty()){
+            log.error("Didn't found any info about " + message.getChat().getFirstName());
+            sendMessage(chatId,"Sorry " + message.getChat().getFirstName() + " We didn't any info about you :(");
+        }else {
+            userRepository.deleteById(chatId);
+        }
+    }
+
+    private Optional<User> dataOfUser(Message message) {
+
+        Optional<User> userById = userRepository.findById(message.getChatId());
+        return userById;
+
     }
 
     private void registerUser(Message message) {
