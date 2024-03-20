@@ -35,6 +35,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             "Type /start to see a welcome message\n\n" +
             "Type /mydata to see data stored about yourself\n\n" +
             "Type /help to see this message again";
+    static final String DELETE_TEXT = "All information about You was deleted successful!";
 
 
     public TelegramBot( BotConfig config) {
@@ -74,6 +75,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     break;
                 case "/delete":
                     deleteUserData(update.getMessage(),chatId);
+                    sendMessage(chatId,DELETE_TEXT);
                     break;
                 case "/settings":
                     break;
@@ -90,6 +92,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             sendMessage(chatId,"Sorry " + message.getChat().getFirstName() + " We didn't any info about you :(");
         }else {
             userRepository.deleteById(chatId);
+            log.info("information about " + message.getChat().getFirstName() + " was deleted");
         }
     }
 
