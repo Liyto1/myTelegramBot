@@ -89,7 +89,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private void deleteUserData(Message message, long chatId) {
         if(userRepository.findById(message.getChatId()).isEmpty()){
             log.error("Didn't found any info about " + message.getChat().getFirstName());
-            sendMessage(chatId,"Sorry " + message.getChat().getFirstName() + " We didn't any info about you :(");
+            sendMessage(chatId,"Sorry " + message.getChat().getFirstName() + " We didn't have any info about you :(");
         }else {
             userRepository.deleteById(chatId);
             log.info("information about " + message.getChat().getFirstName() + " was deleted");
